@@ -38,6 +38,7 @@ namespace runner
       void render();
       void CollisionCheck();
       void Restart();
+
    private:
       void on_mouse_move(const sf::Vector2f &position) noexcept;
       void on_key_pressed(const sf::Keyboard::Key key);
