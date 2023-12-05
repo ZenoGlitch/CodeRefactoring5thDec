@@ -9,10 +9,13 @@ namespace runner
     static const char* kBrickID     = "brick";
     static const char* kFallingStarID = "fallingStar";
 
+    constexpr int screenWidth = 1280;
+    constexpr int screenHeight = 720;
+    constexpr sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
+
    void Application::run()
    {
-      const sf::VideoMode mode{ 1280, 720 };
-      const sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
+      const sf::VideoMode mode{ screenWidth, screenHeight };
       m_window.create(mode, "pineapple", flags);
       if (!m_window.isOpen() || !enter()) {
          return;
@@ -25,7 +28,7 @@ namespace runner
          
          while (m_window.pollEvent(event)) {
             if (event.type == sf::Event::MouseMoved) {
-               on_mouse_move({ float(event.mouseMove.x), float(event.mouseMove.y) });
+               on_mouse_move({ static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y) });
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                on_button_pressed(event.mouseButton.button);
@@ -61,14 +64,12 @@ namespace runner
       return true;
    }
 
-   void Application::exit()
+   void Application::exit() noexcept
    {
    }
 
    void Application::SetUp()
    {
-       m_CurrentGameState = TheGamesStates::pregame;
-
        m_AssetsManagement.LoadTexture(kPlayerID, "assets/player.png");
        m_AssetsManagement.LoadTexture(kBallID, "assets/Ball.png");
        m_AssetsManagement.LoadTexture(kBrickID, "assets/WhiteHitBrick.png");
@@ -88,8 +89,8 @@ namespace runner
        m_minOfScreen = 0.0f;
        loadHighScore();
        
-       m_player.SetUp(m_AssetsManagement.GetTexture(kPlayerID), m_minOfScreen, (float)m_window.getSize().x);
-       m_ball.SetUp(m_AssetsManagement.GetTexture(kBallID), m_window.getSize().x, m_window.getSize().y, (int)m_minOfScreen, (int)m_minOfScreen);
+       m_player.SetUp(m_AssetsManagement.GetTexture(kPlayerID), m_minOfScreen, static_cast<float>(m_window.getSize().x));
+       m_ball.SetUp(m_AssetsManagement.GetTexture(kBallID), m_window.getSize().x, m_window.getSize().y, static_cast<int>(m_minOfScreen), static_cast<int>(m_minOfScreen));
        m_brick.SetUp(m_AssetsManagement.GetTexture(kBrickID));
        m_parallaxBackground.SetUp(m_AssetsManagement.GetTexture(kFallingStarID));
    }
@@ -134,11 +135,11 @@ namespace runner
       {
         for (int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++)
         {
-            m_window.draw(m_parallaxBackground.m_fallingStarYellow[i].sprite);
+            m_window.draw(m_parallaxBackground.m_fallingStarYellow.at(i).sprite);
         }
         for (int i = 0; i < m_parallaxBackground.m_fallingStarRed.size(); i++)
         {
-            m_window.draw(m_parallaxBackground.m_fallingStarRed[i].sprite);
+            m_window.draw(m_parallaxBackground.m_fallingStarRed.at(i).sprite);
         }
         m_window.draw(m_ScoreText);
         m_window.draw(m_player.m_playerSprite);
@@ -146,7 +147,7 @@ namespace runner
 
         for(int i = 0; i < m_brick.m_brickObject.size(); i++)
         {
-           m_window.draw(m_brick.m_brickObject[i].sprite);
+           m_window.draw(m_brick.m_brickObject.at(i).sprite);
         }
         
       }
@@ -169,7 +170,7 @@ namespace runner
       m_window.display();
    }
 
-   void Application::on_mouse_move(const sf::Vector2f &position) 
+   void Application::on_mouse_move(const sf::Vector2f &position) noexcept
    {
       m_mouse_position = position;
    }
@@ -212,7 +213,7 @@ namespace runner
       }
    }
 
-   void Application::on_key_released(const sf::Keyboard::Key key)
+   void Application::on_key_released(const sf::Keyboard::Key key) noexcept
    {
        if (key == sf::Keyboard::Right)
        {
@@ -224,12 +225,12 @@ namespace runner
        }  
    }
 
-   void Application::on_button_pressed(const  sf::Mouse::Button button)
+   void Application::on_button_pressed(const  sf::Mouse::Button button) noexcept
    {
 
    }
 
-   void Application::on_button_released(const sf::Mouse::Button button)
+   void Application::on_button_released(const sf::Mouse::Button button) noexcept
    {
    
    }
@@ -246,7 +247,7 @@ namespace runner
 
    void Application::CollisionCheck()
    {
-       float r1RightEdge = m_player.m_playerSprite.getPosition().y + m_player.m_playerSprite.getTexture()->getSize().y; //TODO: Mark as const
+       const float r1RightEdge = m_player.m_playerSprite.getPosition().y + m_player.m_playerSprite.getTexture()->getSize().y;
        if (r1RightEdge >= m_ball.m_ballSprite.getPosition().y)
        {
            std::cout << " right side someting" << std::endl;
@@ -261,7 +262,7 @@ namespace runner
 
        for (int i = 0; i < m_brick.m_brickObject.size(); i++)
        {
-           if (AxisAlignedBoundingBox(m_brick.m_brickObject[i].sprite, m_ball.m_ballSprite))
+           if (AxisAlignedBoundingBox(m_brick.m_brickObject.at(i).sprite, m_ball.m_ballSprite))
            {
                m_ball.m_direction.y = -m_ball.m_direction.y;
                m_ball.m_speed += 10.0f;
@@ -272,16 +273,16 @@ namespace runner
        }
        for (int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++)
        {
-           if(m_parallaxBackground.m_fallingStarYellow[i].positionY >= m_window.getSize().y)
+           if(m_parallaxBackground.m_fallingStarYellow.at(i).positionY >= m_window.getSize().y)
            {
-               m_parallaxBackground.m_fallingStarYellow[i].positionY = -100;
+               m_parallaxBackground.m_fallingStarYellow.at(i).positionY = -100;
            }
        }
        for (int i = 0; i < m_parallaxBackground.m_fallingStarRed.size(); i++)
        {
-           if (m_parallaxBackground.m_fallingStarRed[i].positionY >= m_window.getSize().y)
+           if (m_parallaxBackground.m_fallingStarRed.at(i).positionY >= m_window.getSize().y)
            {
-               m_parallaxBackground.m_fallingStarRed[i].positionY = -100;
+               m_parallaxBackground.m_fallingStarRed.at(i).positionY = -100;
            }
        }
        // If the player is out of bounds or edge of the bottom screen that should give trigger fail condition.
@@ -322,18 +323,18 @@ namespace runner
        writeFile.close();
    }
 
-   std::string Application::intToString(int score)
+   std::string runner::intToString(int score)
    {
        std::string string = std::to_string(score);
        return string;
    }
 
-   bool Application::AxisAlignedBoundingBox(sf::Sprite& box1, sf::Sprite& box2)
+   bool Application::AxisAlignedBoundingBox(const sf::Sprite& box1, const sf::Sprite& box2)
    {
-       bool collisionX = box1.getPosition().x + box1.getTexture()->getSize().x >= box2.getPosition().x &&
+       const bool collisionX = box1.getPosition().x + box1.getTexture()->getSize().x >= box2.getPosition().x &&
            box2.getPosition().x + box2.getTexture()->getSize().x >= box1.getPosition().x;
 
-       bool collisionY = box1.getPosition().y + box1.getTexture()->getSize().y >= box2.getPosition().y &&
+       const bool collisionY = box1.getPosition().y + box1.getTexture()->getSize().y >= box2.getPosition().y &&
            box2.getPosition().y + box2.getTexture()->getSize().y >= box1.getPosition().y;
        return collisionX && collisionY;
    }
