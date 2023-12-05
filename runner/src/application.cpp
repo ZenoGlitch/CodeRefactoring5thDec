@@ -9,13 +9,13 @@ namespace runner
     static const char* kBrickID     = "brick";
     static const char* kFallingStarID = "fallingStar";
 
-    constexpr int screenWidth = 1280;
-    constexpr int screenHeight = 720;
+    constexpr int SCREEN_WIDTH = 1280;
+    constexpr int SCREEN_HEIGHT = 720;
     constexpr sf::Uint32 flags = sf::Style::Titlebar | sf::Style::Close;
 
    void Application::run()
    {
-      const sf::VideoMode mode{ screenWidth, screenHeight };
+      const sf::VideoMode mode{ SCREEN_WIDTH, SCREEN_HEIGHT };
       m_window.create(mode, "pineapple", flags);
       if (!m_window.isOpen() || !enter()) {
          return;
@@ -90,7 +90,7 @@ namespace runner
        loadHighScore();
        
        m_player.SetUp(m_AssetsManagement.GetTexture(kPlayerID), m_minOfScreen, static_cast<float>(m_window.getSize().x));
-       m_ball.SetUp(*m_AssetsManagement.GetTexture(kBallID), m_window.getSize().x, m_window.getSize().y, static_cast<int>(m_minOfScreen), static_cast<int>(m_minOfScreen));
+       m_ball.SetUp(*m_AssetsManagement.GetTexture(kBallID));
        m_brick.SetUp(m_AssetsManagement.GetTexture(kBrickID));
        m_parallaxBackground.SetUp(m_AssetsManagement.GetTexture(kFallingStarID));
    }
@@ -103,7 +103,7 @@ namespace runner
         m_parallaxBackground.Update(m_deltatime.asSeconds());
         m_ScoreText.setString("Score: " + intToString(m_currentScore));
         m_player.PlayerUpdate(m_deltatime.asSeconds());
-        m_ball.BallUpdate(m_deltatime.asSeconds());
+        m_ball.Update(m_deltatime.asSeconds());
         CollisionCheck();
       } 
       else

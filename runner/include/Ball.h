@@ -7,22 +7,30 @@
 //	UP, Down, Left, Right
 //};
 
+constexpr int SCREEN_WIDTH = 1280;
+constexpr int SCREEN_HEGHT = 720;
+
 class Ball 
 {
 public:
-	Ball() noexcept;
-	~Ball();
-	void SetUp(const sf::Texture &texture, int rectWidth, int rectHeight, int rectLeft, int rectTop);
-	void BallUpdate(float deltatime);
-	float Length(const sf::Vector2f& rhs);
-	void WorldConstraining(float posX, float posY);
-	void Restart();
-	sf::IntRect worldBounds;
+	Ball();
+
+	void SetUp(const sf::Texture &texture);
+	void Update(float deltatime);
+	const float Length(const sf::Vector2f& rhs) noexcept;
+	void WorldConstraining(float posX, float posY) noexcept;
+	void Restart() noexcept;
 	sf::Vector2f Normalized(const sf::Vector2f& rhs);
 	sf::Sprite m_ballSprite;
-	sf::Vector2f m_direction;
-	bool hasCollided;
-	float m_speed;
+	
+	
+	const sf::IntRect worldBounds = { 0, 0, SCREEN_WIDTH , SCREEN_HEGHT};
+	
+	bool hasCollided = false;
+	float m_speed{ 200.0f };
+	float positionX{ 500.0f };
+	float positionY{ 400.0f };
+	sf::Vector2f m_direction{positionX, positionY};
+
 private:
-	float positionX, positionY;
 };
