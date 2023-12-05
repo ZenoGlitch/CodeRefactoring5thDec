@@ -23,7 +23,7 @@ namespace runner
       void run();
 
    private:
-      enum class TheGamesStates
+      enum class GameState
       {
           win, lose, running, pregame
       };
@@ -61,7 +61,7 @@ namespace runner
       Ball             m_ball;
       Brick            m_brick;
       AssetsManagement m_AssetsManagement;
-      TheGamesStates   m_CurrentGameState = TheGamesStates::pregame;
+      GameState   m_CurrentGameState = GameState::pregame;
       parallaxBackground m_parallaxBackground;
       sf::Text m_startMainuText, m_WinText, m_LoseText, m_ScoreText, m_highScoreText;
       int m_highScoreInt = 0;

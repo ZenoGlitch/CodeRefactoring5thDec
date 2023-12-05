@@ -1,6 +1,6 @@
 #include "Ball.h"
 
-Ball::Ball()
+Ball::Ball() noexcept
 {
 	hasCollided = false;
 	m_speed = 200.0f;
@@ -15,9 +15,9 @@ Ball::~Ball()
 
 };
 
-void Ball::SetUp(sf::Texture* texture, int rectWidth, int rectHeight, int rectLeft, int rectTop)
+void Ball::SetUp(const sf::Texture &texture, int rectWidth, int rectHeight, int rectLeft, int rectTop)
 {
-	m_ballSprite.setTexture(*texture);
+	m_ballSprite.setTexture(texture);
 	m_ballSprite.setPosition(positionX, positionY);
 	m_ballSprite.setScale(1.0f, 1.0f);
 	worldBounds.width = rectWidth;
