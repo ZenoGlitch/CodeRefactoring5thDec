@@ -133,23 +133,24 @@ namespace runner
 
       if(m_CurrentGameState == TheGamesStates::running)
       {
-        for (int i = 0; i < m_parallaxBackground.m_fallingStarYellow.size(); i++)
+        for (auto& yellowStar : m_parallaxBackground.m_fallingStarYellow)
         {
-            m_window.draw(m_parallaxBackground.m_fallingStarYellow.at(i).sprite);
+            m_window.draw(yellowStar.sprite);
         }
-        for (int i = 0; i < m_parallaxBackground.m_fallingStarRed.size(); i++)
+
+        for (auto& redStar : m_parallaxBackground.m_fallingStarRed)
         {
-            m_window.draw(m_parallaxBackground.m_fallingStarRed.at(i).sprite);
+            m_window.draw(redStar.sprite);
         }
+
         m_window.draw(m_ScoreText);
         m_window.draw(m_player.m_playerSprite);
         m_window.draw(m_ball.m_ballSprite);
 
-        for(int i = 0; i < m_brick.m_brickObject.size(); i++)
+        for (auto& brick : m_brick.m_brickObject)
         {
-           m_window.draw(m_brick.m_brickObject.at(i).sprite);
+            m_window.draw(brick.sprite);
         }
-        
       }
 
       if(m_CurrentGameState == TheGamesStates::lose)
